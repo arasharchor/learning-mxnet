@@ -3,6 +3,7 @@ import find_mxnet
 import mxnet as mx
 import argparse
 import logging
+import os
 
 
 def parse_args():
@@ -25,25 +26,29 @@ def parse_args():
                         help='times the lr with a factor for every lr-factor-epoch epoch')
     parser.add_argument('--lr-factor-epoch', type=float, default=1,
                         help='the number of epoch to factor the lr, could be .5')
+    parser.add_argument('--log-file', type=str,
+                        help='log file name')
+    parser.add_argument('--log-dir', type=str,
+                        help='log file directory')
     return parser.parse_args()
 
 
 def get_alexnet_small(num_classes=10):
     input_data = mx.symbol.Variable('data')
     # layer 1
-    conv1 = mx.symbol.Convolution(data=input_data, num_filter=30,
+    conv1 = mx.symbol.Convolution(data=input_data, num_filter=20,
                                   kernel=(5, 5), pad=(2, 2), stride=(1, 1))
     relu1 = mx.symbol.Activation(data=conv1, act_type='relu')
     pool1 = mx.symbol.Pooling(data=relu1, pool_type='max',
                               kernel=(2, 2), stride=(2, 2))
     # layer 2
-    conv2 = mx.symbol.Convolution(data=pool1, num_filter=30,
+    conv2 = mx.symbol.Convolution(data=pool1, num_filter=20,
                                   kernel=(3, 3), pad=(1, 1))
     relu2 = mx.symbol.Activation(data=conv2, act_type='relu')
     pool2 = mx.symbol.Pooling(data=relu2, pool_type='max',
                               kernel=(2, 2), stride=(2, 2))
     # layer 3
-    conv3 = mx.symbol.Convolution(data=pool2, num_filter=30,
+    conv3 = mx.symbol.Convolution(data=pool2, num_filter=20,
                                   kernel=(3, 3), pad=(1, 1))
     relu3 = mx.symbol.Activation(data=conv3, act_type='relu')
     pool3 = mx.symbol.Pooling(data=relu3, pool_type='max',
@@ -124,8 +129,22 @@ def get_iterator(args):
 def model_fit(args, network, data_loader, batch_end_callback=None):
     # logging
     head = '%(asctime)-15s %(message)s'
-    logging.basicConfig(level=logging.DEBUG, format=head)
-    logging.info('start with arguments %s', args)
+    if 'log_file' in args and args.log_file is not None:
+        log_file = args.log_file
+        log_dir = args.log_dir
+        log_file_full_name = os.path.join(log_dir, log_file)
+        if not os.path.exists(log_dir):
+            os.mkdir(log_dir)
+        logger = logging.getLogger()
+        handler = logging.FileHandler(log_file_full_name)
+        formatter = logging.Formatter(head)
+        handler.setFormatter(formatter)
+        logger.addHandler(handler)
+        logger.setLevel(logging.DEBUG)
+        logger.info('start with arguments %s', args)
+    else:
+        logging.basicConfig(level=logging.DEBUG, format=head)
+        logging.info('start with arguments %s', args)
 
     # load model
     model_prefix = args.model_prefix
@@ -150,7 +169,7 @@ def model_fit(args, network, data_loader, batch_end_callback=None):
     epoch_size = args.num_examples / args.batch_size
     
     if 'lr_factor' in args and args.lr_factor < 1:
-        model_args['lr_scheduler'] = mx.lr_scheduler.FacotrScheuler(
+        model_args['lr_scheduler'] = mx.lr_scheduler.FactorScheduler(
             step = max(int(epoch_size * args.lr_factor_epoch), 1),
             factor = args.lr_factor)
 
