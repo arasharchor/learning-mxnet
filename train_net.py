@@ -21,6 +21,10 @@ def parse_args():
                         help='the prefix of model to save')
     parser.add_argument('--load-epoch', type=int,
                         help='load the model on an epoch using the model-prefix')
+    parser.add_argument('--lr-factor', type=float, default=1,
+                        help='times the lr with a factor for every lr-factor-epoch epoch')
+    parser.add_argument('--lr-factor-epoch', type=float, default=1,
+                        help='the number of epoch to factor the lr, could be .5')
     return parser.parse_args()
 
 
@@ -141,7 +145,14 @@ def model_fit(args, network, data_loader, batch_end_callback=None):
 
     # data
     (train, val) = data_loader(args)
+
+    # train
     epoch_size = args.num_examples / args.batch_size
+    
+    if 'lr_factor' in args and args.lr_factor < 1:
+        model_args['lr_scheduler'] = mx.lr_scheduler.FacotrScheuler(
+            step = max(int(epoch_size * args.lr_factor_epoch), 1),
+            factor = args.lr_factor)
 
     model = mx.model.FeedForward(
         symbol = network,
