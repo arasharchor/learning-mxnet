@@ -4,11 +4,6 @@ import mxnet as mx
 import argparse
 import logging
 
-# 7.13
-# 1.去掉一些pool
-# 2.如何检测代码正确?
-#   A: 计算中间变量的尺寸
-
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Train a CNN on cifar10')
@@ -16,39 +11,45 @@ def parse_args():
                         help='the number of training examples')
     parser.add_argument('--batch-size', type=int, default=100,
                         help='the batch size')
-    parser.add_argument('--lr', type=float, default=1,
+    parser.add_argument('--lr', type=float, default=0.05,
                         help='the initial learning rate')
-    parser.add_argument('--num-epochs', type=int, default=20,
+    parser.add_argument('--num-epochs', type=int, default=10,
                         help='the number of training epochs')
+    parser.add_argument('--model-prefix', type=str,
+                        help='the prefix of model to load/save')
+    parser.add_argument('--save-model-prefix', type=str,
+                        help='the prefix of model to save')
+    parser.add_argument('--load-epoch', type=int,
+                        help='load the model on an epoch using the model-prefix')
     return parser.parse_args()
 
 
 def get_alexnet_small(num_classes=10):
     input_data = mx.symbol.Variable('data')
-
+    # layer 1
     conv1 = mx.symbol.Convolution(data=input_data, num_filter=30,
                                   kernel=(5, 5), pad=(2, 2), stride=(1, 1))
     relu1 = mx.symbol.Activation(data=conv1, act_type='relu')
     pool1 = mx.symbol.Pooling(data=relu1, pool_type='max',
                               kernel=(2, 2), stride=(2, 2))
-
+    # layer 2
     conv2 = mx.symbol.Convolution(data=pool1, num_filter=30,
                                   kernel=(3, 3), pad=(1, 1))
     relu2 = mx.symbol.Activation(data=conv2, act_type='relu')
     pool2 = mx.symbol.Pooling(data=relu2, pool_type='max',
                               kernel=(2, 2), stride=(2, 2))
-
+    # layer 3
     conv3 = mx.symbol.Convolution(data=pool2, num_filter=30,
                                   kernel=(3, 3), pad=(1, 1))
     relu3 = mx.symbol.Activation(data=conv3, act_type='relu')
     pool3 = mx.symbol.Pooling(data=relu3, pool_type='max',
                               kernel=(2, 2), stride=(2, 2), pad=(1, 1))
-
+    # layer 4
     # flatten = mx.symbol.Flatten(data=pool3)
     # fc1 = mx.symbol.FullyConnected(data=flatten, num_hidden=20)
     fc1 = mx.symbol.FullyConnected(data=pool3, num_hidden=40)
     relu4 = mx.symbol.Activation(data=fc1, act_type='relu')
-
+    # layer 5
     fc2 = mx.symbol.FullyConnected(data=relu4, num_hidden=num_classes)
     softmax = mx.symbol.SoftmaxOutput(data=fc2, name='softmax')
     return softmax
@@ -107,32 +108,60 @@ def get_iterator(args):
         batch_size = args.batch_size,
         shuffle = True)
 
-    test = mx.io.ImageRecordIter(
+    val = mx.io.ImageRecordIter(
         path_imgrec = 'cifar10/test.rec',
         mean_img = 'cifar10/mean.bin',
         data_shape = data_shape,
         batch_size = args.batch_size)
 
-    return (train, test)
+    return (train, val)
 
 
-def model_fit(args, network, data_loader):
+def model_fit(args, network, data_loader, batch_end_callback=None):
+    # logging
     head = '%(asctime)-15s %(message)s'
     logging.basicConfig(level=logging.DEBUG, format=head)
     logging.info('start with arguments %s', args)
 
-    (train, test) = data_loader(args)
+    # load model
+    model_prefix = args.model_prefix
+    model_args = {}
+    if args.load_epoch is not None:
+        assert model_refix is not None
+        tmp = mx.model.FeedForward.load(model_prefix, args.load_epoch)
+        model_args = {'arg_params': tmp.arg_params,
+                      'aux_params': tmp.aux_params,
+                      'begin_epoch': args.load_epoch}
+
+    # save model
+    save_model_prefix = args.save_model_prefix
+    if save_model_prefix is None:
+        save_model_prefix = model_prefix
+    checkpoint = None if save_model_prefix is None else mx.callback.do_checkpoint(save_model_prefix)
+
+    # data
+    (train, val) = data_loader(args)
     epoch_size = args.num_examples / args.batch_size
 
     model = mx.model.FeedForward(
         symbol = network,
         num_epoch = args.num_epochs,
         learning_rate = args.lr,
-        epoch_size = epoch_size)
+        epoch_size = epoch_size,
+        **model_args)
+
+    if batch_end_callback is not None:
+        if not isinstance(batch_end_callback, list):
+            batch_end_callback = [batch_end_callback]
+    else:
+        batch_end_callback = []
+    batch_end_callback.append(mx.callback.Speedometer(args.batch_size, 100))
 
     model.fit(
         X = train,
-        eval_data = test)
+        eval_data = val,
+        batch_end_callback = batch_end_callback,
+        epoch_end_callback = checkpoint)
 
 
 if __name__ == '__main__':
