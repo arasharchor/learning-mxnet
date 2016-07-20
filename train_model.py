@@ -95,7 +95,7 @@ def fit(args, network, data_loader, batch_end_callback=None):
     model.fit(
         X                  = train,
         eval_data          = val,
-    #    eval_metric        = eval_metrics,
+#        eval_metric        = eval_metrics,
         kvstore            = kv,
         batch_end_callback = batch_end_callback,
         epoch_end_callback = checkpoint)
