@@ -54,24 +54,25 @@ def _download(data_dir):
 
 
 def get_iterator(args, kv):
-    data_shape = (3, 28, 28)
+    data_shape = (3, 24, 24)
     _download('cifar10/')
 
     train = mx.io.ImageRecordIter(
         path_imgrec = "cifar10/train.rec",
-        mean_img    = "cifar10/mean.bin",
+        # mean_img    = "cifar10/mean.bin",
         data_shape  = data_shape,
         batch_size  = args.batch_size,
-        #rand_crop   = True,
-        #rand_mirror = True,
+        rand_crop   = True,
+        rand_mirror = True,
         num_parts   = kv.num_workers,
-        part_index  = kv.rank)
+        part_index  = kv.rank,
+        shuffle     = True)
 
     val = mx.io.ImageRecordIter(
         path_imgrec = "cifar10/test.rec",
-        mean_img    = "cifar10/mean.bin",
-        #rand_crop   = False,
-        #rand_mirror = False,
+        # mean_img    = "cifar10/mean.bin",
+        rand_crop   = False,
+        rand_mirror = False,
         data_shape  = data_shape,
         batch_size  = args.batch_size,
         num_parts   = kv.num_workers,
