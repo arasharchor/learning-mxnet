@@ -59,7 +59,6 @@ def get_iterator(args, kv):
 
     train = mx.io.ImageRecordIter(
         path_imgrec = "cifar10/train.rec",
-        # mean_img    = "cifar10/mean.bin",
         data_shape  = data_shape,
         batch_size  = args.batch_size,
         rand_crop   = True,
@@ -70,7 +69,6 @@ def get_iterator(args, kv):
 
     val = mx.io.ImageRecordIter(
         path_imgrec = "cifar10/test.rec",
-        # mean_img    = "cifar10/mean.bin",
         rand_crop   = False,
         rand_mirror = False,
         data_shape  = data_shape,
