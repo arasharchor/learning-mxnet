@@ -75,8 +75,8 @@ def fit(args, network, data_loader, batch_end_callback=None):
         symbol             = network,
         num_epoch          = args.num_epochs,
         learning_rate      = args.lr,
-#        momentum           = 0.9,
-#        wd                 = 0.00001,
+        momentum           = 0.9,
+        wd                 = 0.00001,
         initializer        = mx.init.Xavier(factor_type="in", magnitude=2.34),
         **model_args)
 
@@ -95,7 +95,7 @@ def fit(args, network, data_loader, batch_end_callback=None):
     model.fit(
         X                  = train,
         eval_data          = val,
-#        eval_metric        = eval_metrics,
+        eval_metric        = eval_metrics,
         kvstore            = kv,
         batch_end_callback = batch_end_callback,
         epoch_end_callback = checkpoint)
