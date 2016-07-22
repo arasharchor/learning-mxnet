@@ -1,10 +1,10 @@
-Using MXNet for Object Detection
+Using [MXNet](https://github.com/dmlc/mxnet) for Object Detection
 ===
 Recent object detection approaches based deep learning use image classification task to pretrain a convolutional neural network model. This repository contains examples for Image Classification and Object Detection.
 
 Install MXNet
 ---
-[MXNet](https://github.com/dmlc/mxnet) is a deep learning framework. Here is an [Install Guide](http://mxnet.readthedocs.io/en/latest/how_to/build.html).
+[Install Guide](http://mxnet.readthedocs.io/en/latest/how_to/build.html) for MXNet.
 
 Image Classification
 ---
