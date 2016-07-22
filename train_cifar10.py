@@ -7,7 +7,7 @@ import train_model
 import importlib
 
 
-def parse_args():
+def get_parser():
     parser = argparse.ArgumentParser(description='Train an image classifier on cifar10')
     parser.add_argument('--network', type=str, default='alexnet',
                         help = 'the cnn to use')
@@ -17,7 +17,7 @@ def parse_args():
                         help='the number of training examples')
     parser.add_argument('--batch-size', type=int, default=100,
                         help='the batch size')
-    parser.add_argument('--lr', type=float, default=0.05,
+    parser.add_argument('--lr', type=float, default=0.00005,
                         help='the initial learning rate')
     parser.add_argument('--lr-factor', type=float, default=1,
                         help='times the lr with a factor for every lr-factor-epoch epoch')
@@ -37,7 +37,7 @@ def parse_args():
                         help='the log file')
     parser.add_argument('--log-dir', type=str,
                         help='the log dir')
-    return parser.parse_args()
+    return parser
 
 
 # download data if necessary
@@ -79,6 +79,6 @@ def get_iterator(args, kv):
     return (train, val)
 
 if __name__ == '__main__':
-    args = parse_args()
+    args = get_parser().parse_args()
     net = importlib.import_module('symbol_' + args.network).get_symbol(10)
     train_model.fit(args, net, get_iterator)
