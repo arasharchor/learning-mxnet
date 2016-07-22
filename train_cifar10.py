@@ -15,22 +15,22 @@ def get_parser():
     		            help='the gpus will be used, e.g "0,1,2,3"')
     parser.add_argument('--num-examples', type=int, default=60000,
                         help='the number of training examples')
-    parser.add_argument('--batch-size', type=int, default=100,
+    parser.add_argument('--batch-size', type=int, default=128,
                         help='the batch size')
-    parser.add_argument('--lr', type=float, default=0.00005,
+    parser.add_argument('--lr', type=float, default=0.01,
                         help='the initial learning rate')
     parser.add_argument('--lr-factor', type=float, default=1,
                         help='times the lr with a factor for every lr-factor-epoch epoch')
     parser.add_argument('--lr-factor-epoch', type=float, default=1,
                         help='the number of epoch to factor the lr, could be .5')
-    parser.add_argument('--num-epochs', type=int, default=10,
+    parser.add_argument('--num-epochs', type=int, default=20,
                         help='the number of training epochs')
     parser.add_argument('--model-prefix', type=str,
                         help='the prefix of model to load')
-    parser.add_argument('--save-model-prefix', type=str,
-                        help='the prefix of model to save')
     parser.add_argument('--load-epoch', type=int,
                         help='load the model on an epoch using the model-prefix')
+    parser.add_argument('--save-model-prefix', type=str,
+                        help='the prefix of model to save')
     parser.add_argument('--kv-store', type=str, default='local',
                         help='the kvstore type')
     parser.add_argument('--log-file', type=str,
