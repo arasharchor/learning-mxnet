@@ -12,7 +12,7 @@ def get_parser():
     parser.add_argument('--network', type=str, default='alexnet',
                         help = 'the cnn to use')
     parser.add_argument('--gpus', type=str,
-    		            help='the gpus will be used, e.g "0,1,2,3"')
+                        help='the gpus will be used, e.g "0,1,2,3"')
     parser.add_argument('--num-examples', type=int, default=60000,
                         help='the number of training examples')
     parser.add_argument('--batch-size', type=int, default=128,
