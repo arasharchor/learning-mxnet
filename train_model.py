@@ -70,13 +70,18 @@ def fit(args, network, data_loader, batch_end_callback=None):
             args.gpus is None or len(args.gpus.split(',')) is 1):
         kv = None
 
+    if args.optimizer == 'sgd':
+        model_args['optimizer'] = 'sgd'
+        model_args['momentum'] = 0.9
+        model_args['wd']       = 0.00001
+    elif args.optimizer == 'rmsprop':
+        model_args['optimizer'] = 'rmsprop'
+
     model = mx.model.FeedForward(
         ctx                = devs,
         symbol             = network,
         num_epoch          = args.num_epochs,
         learning_rate      = args.lr,
-        momentum           = 0.9,
-        wd                 = 0.00001,
         initializer        = mx.init.Xavier(factor_type="in", magnitude=2.34),
         **model_args)
 
