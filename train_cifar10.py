@@ -11,11 +11,13 @@ def get_parser():
     parser = argparse.ArgumentParser(description='Train an image classifier on cifar10')
     parser.add_argument('--network', type=str, default='alexnet',
                         help = 'the cnn to use')
+    parser.add_argument('--optimizer', type=str, default='sgd',
+                        help = 'the optimizer to use')
     parser.add_argument('--gpus', type=str,
                         help='the gpus will be used, e.g "0,1,2,3"')
     parser.add_argument('--num-examples', type=int, default=60000,
                         help='the number of training examples')
-    parser.add_argument('--batch-size', type=int, default=128,
+    parser.add_argument('--batch-size', type=int, default=100,
                         help='the batch size')
     parser.add_argument('--lr', type=float, default=0.01,
                         help='the initial learning rate')
@@ -77,6 +79,7 @@ def get_iterator(args, kv):
         part_index  = kv.rank)
 
     return (train, val)
+
 
 if __name__ == '__main__':
     args = get_parser().parse_args()
