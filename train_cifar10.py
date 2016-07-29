@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-import find_mxnet
 import mxnet as mx
 import argparse
-import os, sys
+import os
+import sys
 import train_model
 import importlib
 
@@ -54,7 +54,7 @@ def _download(data_dir):
         os.system("mkdir " + data_dir)
     os.chdir(data_dir)
     if (not os.path.exists('train.rec')) or \
-       (not os.path.exists('test.rec')) :
+       (not os.path.exists('test.rec')):
         os.system("wget http://data.dmlc.ml/mxnet/data/cifar10.zip")
         os.system("unzip -u cifar10.zip")
         os.system("mv cifar/* .; rm -rf cifar; rm cifar10.zip")

@@ -1,4 +1,3 @@
-import find_mxnet
 import mxnet as mx
 import logging
 import os
@@ -35,9 +34,9 @@ def fit(args, network, data_loader, batch_end_callback=None):
     if args.load_epoch is not None:
         assert model_prefix is not None
         tmp = mx.model.FeedForward.load(model_prefix, args.load_epoch)
-        model_args = {'arg_params' : tmp.arg_params,
-                      'aux_params' : tmp.aux_params,
-                      'begin_epoch' : args.load_epoch}
+        model_args = {'arg_params': tmp.arg_params,
+                      'aux_params': tmp.aux_params,
+                      'begin_epoch': args.load_epoch}
     # save model
     save_model_prefix = args.save_model_prefix
     if save_model_prefix is None:
@@ -73,7 +72,7 @@ def fit(args, network, data_loader, batch_end_callback=None):
     if args.optimizer == 'sgd':
         model_args['optimizer'] = 'sgd'
         model_args['momentum'] = args.momentum
-        model_args['wd']       = 0.00001
+        model_args['wd'] = 0.00001
     elif args.optimizer == 'rmsprop':
         model_args['optimizer'] = 'rmsprop'
         model_args['gamma1'] = args.gamma1
@@ -88,7 +87,7 @@ def fit(args, network, data_loader, batch_end_callback=None):
         **model_args)
 
     eval_metrics = ['accuracy']
-    ## TopKAccuracy only allows top_k > 1
+    # TopKAccuracy only allows top_k > 1
     for top_k in [5, 10, 20]:
         eval_metrics.append(mx.metric.create('top_k_accuracy', top_k = top_k))
 
