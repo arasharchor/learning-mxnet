@@ -72,10 +72,12 @@ def fit(args, network, data_loader, batch_end_callback=None):
 
     if args.optimizer == 'sgd':
         model_args['optimizer'] = 'sgd'
-        model_args['momentum'] = 0.9
+        model_args['momentum'] = args.momentum
         model_args['wd']       = 0.00001
     elif args.optimizer == 'rmsprop':
         model_args['optimizer'] = 'rmsprop'
+        model_args['gamma1'] = args.gamma1
+        model_args['gamma2'] = args.gamma2
 
     model = mx.model.FeedForward(
         ctx                = devs,

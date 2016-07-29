@@ -25,6 +25,12 @@ def get_parser():
                         help='times the lr with a factor for every lr-factor-epoch epoch')
     parser.add_argument('--lr-factor-epoch', type=float, default=1,
                         help='the number of epoch to factor the lr, could be .5')
+    parser.add_argument('--momentum', type=float, default=0.9,
+                        help='momentum value')
+    parser.add_argument('--gamma1', type=float, default=0.95,
+                        help='decay factor of moving average for gradient, gradient^2 in RMSprop')
+    parser.add_argument('--gamma2', type=float, default=0.9,
+                        help='momentum factor in RMSprop')
     parser.add_argument('--num-epochs', type=int, default=20,
                         help='the number of training epochs')
     parser.add_argument('--model-prefix', type=str,
