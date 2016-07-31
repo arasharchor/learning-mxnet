@@ -14,11 +14,11 @@ AlexNet symbol definition for MXNet is in symbol_alexnet.py.  Here is a recipe o
 
 ####Stochastic Gradient Descent
 1. Start by training the net for 150 epochs with learning rate = 1e-4 without step decay, momentum = 0.9 and wd = 1e-5.
-2. Resume training with 0.99 step decay, momentum = 0.99 and wd = 1e-5.
+2. Resume training for another 450 epochs with 0.99 step decay, momentum = 0.99 and wd = 1e-5.
 Then we get 80.48% validation accuracy.
 
 ####[RMSProp](http://arxiv.org/pdf/1308.0850v5.pdf)
-Train the net by RMSProp with learning rate = 1e-5, gamma1 = 0.9, 0.95, 0.99, 0.999 will get 80.44%, 80.99%, 80.40%, 80.43 validation accuracy, where gamma1 is decay factor of moving average for gradient, gradient^2.
+Train the net by RMSProp for 600 epochs with learning rate = 1e-5, gamma1 = 0.9, 0.95, 0.99, 0.999 will get 80.44%, 80.99%, 80.40%, 80.43 validation accuracy, where gamma1 is decay factor of moving average for gradient, gradient^2.
 
 ##Object Detection
 [YOLO](http://pjreddie.com/darknet/yolo/) is a new real-time approach to object detection.
