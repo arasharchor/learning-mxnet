@@ -20,7 +20,7 @@ Then we get 80.48% validation accuracy.
 ####[RMSProp](http://arxiv.org/pdf/1308.0850v5.pdf)
 Train the net by RMSProp for 600 epochs with learning rate = 1e-5, gamma1 = 0.9, 0.95, 0.99, 0.999 will get 80.44%, 80.99%, 80.40%, 80.43 validation accuracy, where gamma1 is decay factor of moving average for gradient, gradient^2.
 
-More results please see [classification_result](https://github.com/bertjiazheng/learning-mxnet/blob/master/classification_result.ipynb).
+More results please see [classification_result.ipynb](https://github.com/bertjiazheng/learning-mxnet/blob/master/classification_result.ipynb).
 
 ##Object Detection
 [YOLO](http://pjreddie.com/darknet/yolo/) is a new real-time approach to object detection.
