@@ -88,8 +88,8 @@ def fit(args, network, data_loader, batch_end_callback=None):
 
     eval_metrics = ['accuracy']
     # TopKAccuracy only allows top_k > 1
-    for top_k in [5, 10, 20]:
-        eval_metrics.append(mx.metric.create('top_k_accuracy', top_k = top_k))
+    # for top_k in [5, 10, 20]:
+    #    eval_metrics.append(mx.metric.create('top_k_accuracy', top_k = top_k))
 
     if batch_end_callback is not None:
         if not isinstance(batch_end_callback, list):
@@ -101,7 +101,7 @@ def fit(args, network, data_loader, batch_end_callback=None):
     model.fit(
         X                  = train,
         eval_data          = val,
-        # eval_metric        = eval_metrics,
+        eval_metric        = eval_metrics,
         kvstore            = kv,
         batch_end_callback = batch_end_callback,
         epoch_end_callback = checkpoint)
