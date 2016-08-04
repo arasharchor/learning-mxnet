@@ -23,7 +23,12 @@ Train the net by RMSProp for 600 epochs with learning rate = 1e-5, gamma1 = 0.9,
 More results please see [classification_result.ipynb](https://github.com/bertjiazheng/learning-mxnet/blob/master/classification_result.ipynb).
 
 ##Object Detection
-[YOLO](http://pjreddie.com/darknet/yolo/) is a new real-time approach to object detection.
+[YOLO](http://pjreddie.com/darknet/yolo/) is a real-time end-to-end object detector. A single Convolutional Neural Network predicts multiple bounding boxes and class probabilities.
+
+#### YOLO Pipeline
+1. Divide the input image into S by S grid cell. If the center of an object falls into a grid cell, that grid cell is responsible for detecting that object.
+2. Each grid cell predicts B bounding boxes(x, y, w, h) and confidence scores(IOU) for each box. (Normalize w, h by image width and height, parametrize x, y to be offset of the grid cell, both [0, 1])
+3. Each grid cell also predicts C conditional class probabilities.
 
 ##Reference
 [1] Krizhevsky, Alex, Ilya Sutskever, and Geoffrey E. Hinton. Imagenet classification with deep convolutional neural networks. Advances in neural information processing systems. 2012.   
